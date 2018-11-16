@@ -1,17 +1,13 @@
-name: gtk-3-examples
+name: gtk-3-test
 version: 0.1
-summary: gtk-3-examples
+summary: gtk-3-test
 description: |
-  gtk-3-examples
+  gtk-3-test
 
 grade: stable
 confinement: strict
 
 plugs:
-  gnome-3-26-1604:
-    interface: content
-    target: $SNAP/gnome-platform
-    default-provider: gnome-3-26-1604
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes
@@ -26,27 +22,27 @@ plugs:
     default-provider: gtk-common-themes
 
 parts:
-  desktop-gnome-platform:
-    source-type: git
-    source: https://github.com/kenvandine/snapcraft-desktop-helpers.git
-    source-branch: better_themes_support
+  desktop-gtk3:
+    override-build: |
+      snapcraftctl build
+      mkdir -pv $SNAPCRAFT_PART_INSTALL/data-dir
   gtk3-widget-factory:
     plugin: nil
-    after: [desktop-gnome-platform]
+    after: [desktop-gtk3]
     stage-packages:
       - gtk-3-examples
-    override-pull: |
-      add-apt-repository -y ppa:ubuntu-desktop/gnome-3-26
-      apt-get -y update
-      apt-get -y upgrade
-      snapcraftctl pull
+    #override-pull: |
+    #  add-apt-repository -y ppa:ubuntu-desktop/gnome-3-26
+    #  apt-get -y update
+    #  apt-get -y upgrade
+    #  snapcraftctl pull
     prime:
       - usr/share/applications/gtk3-demo.desktop
-      - usr/share/applications/gtk3-icon-browser.desktop
-      - usr/share/applications/gtk3-widget-factory.desktop
       - usr/bin/gtk3-demo
-      - usr/bin/gtk3-icon-browser
+      - usr/share/applications/gtk3-widget-factory.desktop
       - usr/bin/gtk3-widget-factory
+      #- usr/share/applications/gtk3-icon-browser.desktop
+      #- usr/bin/gtk3-icon-browser
 apps:
   gtk3-widget-factory:
     command: desktop-launch $SNAP/usr/bin/gtk3-widget-factory
@@ -59,17 +55,17 @@ apps:
       - pulseaudio
       - unity7
       - x11
-  gtk3-icon-browser:
-    command: desktop-launch $SNAP/usr/bin/gtk3-icon-browser
-    desktop: usr/share/applications/gtk3-icon-browser.desktop
-    plugs:
-      - desktop
-      - desktop-legacy
-      - gsettings
-      - opengl
-      - pulseaudio
-      - unity7
-      - x11
+  #gtk3-icon-browser:
+  #  command: desktop-launch $SNAP/usr/bin/gtk3-icon-browser
+  #  desktop: usr/share/applications/gtk3-icon-browser.desktop
+  #  plugs:
+  #    - desktop
+  #    - desktop-legacy
+  #    - gsettings
+  #    - opengl
+  #    - pulseaudio
+  #    - unity7
+  #    - x11
   gtk3-demo:
     command: desktop-launch $SNAP/usr/bin/gtk3-demo
     desktop: usr/share/applications/gtk3-demo.desktop
