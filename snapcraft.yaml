@@ -24,22 +24,14 @@ apps:
     desktop: usr/share/applications/gtk3-widget-factory.desktop
     plugs:
       - desktop
-      - desktop-legacy
-      - gsettings
-      - opengl
-      - pulseaudio
-      - unity7
       - x11
+      - wayland
     extensions: [gnome-3-28]
   gtk3-demo:
     command: usr/bin/gtk3-demo
     desktop: usr/share/applications/gtk3-demo.desktop
     plugs:
       - desktop
-      - desktop-legacy
-      - gsettings
-      - opengl
-      - pulseaudio
-      - unity7
       - x11
+      - wayland
     extensions: [gnome-3-28]
