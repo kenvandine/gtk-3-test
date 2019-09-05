@@ -8,39 +8,9 @@ grade: stable
 confinement: strict
 base: core18
 
-plugs:
-  gnome-3-28-1804:
-    interface: content
-    target: $SNAP/gnome-platform
-    default-provider: gnome-3-28-1804
-  gtk-3-themes:
-    interface: content
-    target: $SNAP/data-dir/themes
-    default-provider: gtk-common-themes
-  icon-themes:
-    interface: content
-    target: $SNAP/data-dir/icons
-    default-provider: gtk-common-themes
-  sound-themes:
-    interface: content
-    target: $SNAP/data-dir/sounds
-    default-provider: gtk-common-themes
-
 parts:
-  desktop-gnome-platform:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-depth: 1
-    source-subdir: gtk
-    plugin: make
-    make-parameters: [ "FLAVOR=gtk3" ]
-    build-packages:
-      - libgtk-3-dev
-    override-build: |
-      snapcraftctl build
-      mkdir -pv $SNAPCRAFT_PART_INSTALL/gnome-platform
   gtk3-widget-factory:
     plugin: nil
-    after: [desktop-gnome-platform]
     stage-packages:
       - gtk-3-examples
     prime:
@@ -50,7 +20,7 @@ parts:
       - usr/bin/gtk3-widget-factory
 apps:
   gtk3-widget-factory:
-    command: desktop-launch $SNAP/usr/bin/gtk3-widget-factory
+    command: usr/bin/gtk3-widget-factory
     desktop: usr/share/applications/gtk3-widget-factory.desktop
     plugs:
       - desktop
@@ -60,8 +30,9 @@ apps:
       - pulseaudio
       - unity7
       - x11
+    extensions: [gnome-3-28]
   gtk3-demo:
-    command: desktop-launch $SNAP/usr/bin/gtk3-demo
+    command: usr/bin/gtk3-demo
     desktop: usr/share/applications/gtk3-demo.desktop
     plugs:
       - desktop
@@ -71,3 +42,4 @@ apps:
       - pulseaudio
       - unity7
       - x11
+    extensions: [gnome-3-28]
