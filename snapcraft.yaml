@@ -18,6 +18,9 @@ parts:
       - usr/bin/gtk3-demo
       - usr/share/applications/gtk3-widget-factory.desktop
       - usr/bin/gtk3-widget-factory
+    override-prime: |
+      snapcraftctl prime
+      sed -i.bak -e 's|NoDisplay=true$||g'  usr/share/applications/gtk3-*.desktop
 apps:
   gtk3-widget-factory:
     command: usr/bin/gtk3-widget-factory
