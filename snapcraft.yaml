@@ -1,40 +1,61 @@
 name: gtk-3-test
-version: "0.1"
+adopt-info: gtk3-widget-factory
 summary: gtk-3-test
 description: |
   gtk-3-test
 
+base: core18
 grade: stable
 confinement: strict
-base: core18
+
+slots:
+  # for GtkApplication registration
+  org-gtk-example:
+    interface: dbus
+    bus: session
+    name: org.gtk.Example
+  org-gtk-iconbrowser:
+    interface: dbus
+    bus: session
+    name: org.gtk.IconBrowser
 
 parts:
   gtk3-widget-factory:
     plugin: nil
     stage-packages:
       - gtk-3-examples
+    override-pull: |
+      snapcraftctl pull
+      snapcraftctl set-version $(dpkg-parsechangelog -l $SNAPCRAFT_PART_INSTALL/usr/share/doc/gtk-3-examples/changelog.Debian.gz -S version | awk -F '-' '{print $1}')
     prime:
       - usr/share/applications/gtk3-demo.desktop
       - usr/bin/gtk3-demo
       - usr/share/applications/gtk3-widget-factory.desktop
       - usr/bin/gtk3-widget-factory
+      - usr/share/applications/gtk3-icon-browser.desktop
+      - usr/bin/gtk3-icon-browser
     override-prime: |
       snapcraftctl prime
       sed -i.bak -e 's|NoDisplay=true$||g'  usr/share/applications/gtk3-*.desktop
 apps:
   gtk3-widget-factory:
+    extensions: [gnome-3-28]
     command: usr/bin/gtk3-widget-factory
     desktop: usr/share/applications/gtk3-widget-factory.desktop
     plugs:
-      - desktop
-      - x11
-      - wayland
+      - opengl
+      - audio-playback
+  gtk3-icon-browser:
     extensions: [gnome-3-28]
+    command: usr/bin/gtk3-icon-browser
+    desktop: usr/share/applications/gtk3-icon-browser.desktop
+    plugs:
+      - opengl
+      - audio-playback
   gtk3-demo:
+    extensions: [gnome-3-28]
     command: usr/bin/gtk3-demo
     desktop: usr/share/applications/gtk3-demo.desktop
     plugs:
-      - desktop
-      - x11
-      - wayland
-    extensions: [gnome-3-28]
+      - opengl
+      - audio-playback
