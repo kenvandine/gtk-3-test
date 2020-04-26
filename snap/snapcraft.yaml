@@ -20,6 +20,10 @@ slots:
     name: org.gtk.IconBrowser
 
 parts:
+  private-fontcache:
+    source: snap/local/scripts
+    plugin: dump
+
   gtk3-widget-factory:
     plugin: nil
     stage-packages:
@@ -37,10 +41,12 @@ parts:
     override-prime: |
       snapcraftctl prime
       sed -i.bak -e 's|NoDisplay=true$||g'  usr/share/applications/gtk3-*.desktop
+
 apps:
   gtk3-widget-factory:
     extensions: [gnome-3-28]
     command: usr/bin/gtk3-widget-factory
+    command-chain: [private-fontcache]
     desktop: usr/share/applications/gtk3-widget-factory.desktop
     plugs:
       - opengl
@@ -48,6 +54,7 @@ apps:
   gtk3-icon-browser:
     extensions: [gnome-3-28]
     command: usr/bin/gtk3-icon-browser
+    command-chain: [private-fontcache]
     desktop: usr/share/applications/gtk3-icon-browser.desktop
     plugs:
       - opengl
@@ -55,6 +62,7 @@ apps:
   gtk3-demo:
     extensions: [gnome-3-28]
     command: usr/bin/gtk3-demo
+    command-chain: [private-fontcache]
     desktop: usr/share/applications/gtk3-demo.desktop
     plugs:
       - opengl

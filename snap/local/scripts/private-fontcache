@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+#########################################
+# Only use the snap's private fontcache #
+#########################################
+
+# ensure_dir_exists calls `mkdir -p` if the given path is not a directory.
+# This speeds up execution time by avoiding unnecessary calls to mkdir.
+#
+# Usage: ensure_dir_exists <path> [<mkdir-options>]...
+#
+function ensure_dir_exists() {
+  [ -d "$1" ] ||  mkdir -p "$@"
+}
+
+# Set $REALHOME to the users real home directory
+REALHOME=$(getent passwd $UID | cut -d ':' -f 6)
+
+# Set config folder to local path
+export XDG_CONFIG_HOME="$SNAP_USER_DATA/.config"
+ensure_dir_exists "$XDG_CONFIG_HOME"
+chmod 700 "$XDG_CONFIG_HOME"
+
+# Font Config
+export FONTCONFIG_PATH="$SNAP_DESKTOP_RUNTIME/etc/fonts"
+export FONTCONFIG_FILE="$SNAP_DESKTOP_RUNTIME/etc/fonts/fonts.conf"
+
+function make_user_fontconfig {
+  echo "<fontconfig>"
+  if [ -d "$REALHOME/.local/share/fonts" ]; then
+    echo "  <dir>$REALHOME/.local/share/fonts</dir>"
+  fi
+  if [ -d "$REALHOME/.fonts" ]; then
+    echo "  <dir>$REALHOME/.fonts</dir>"
+  fi
+  for ((i = 0; i < ${#data_dirs_array[@]}; i++)); do
+    if [ -d "${data_dirs_array[$i]}/fonts" ]; then
+      echo "  <dir>${data_dirs_array[$i]}/fonts</dir>"
+    fi
+  done
+  echo '  <include ignore_missing="yes">conf.d</include>'
+  # We need to include this default cachedir first so that caching
+  # works: without it, fontconfig will try to write to the real user home
+  # cachedir and be blocked by AppArmor.
+  echo '  <cachedir prefix="xdg">fontconfig</cachedir>'
+  if [ -d "$SNAP_COMMON/fontconfig" ]; then
+    echo "  <cachedir>$SNAP_COMMON/fontconfig</cachedir>"
+  fi
+  echo "</fontconfig>"
+}
+
+ensure_dir_exists "$XDG_CONFIG_HOME/fontconfig"
+make_user_fontconfig > "$XDG_CONFIG_HOME/fontconfig/fonts.conf"
+
+exec "$@"

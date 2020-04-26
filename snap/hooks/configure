@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+mkdir -p $SNAP_COMMON/fontconfig
+fc-cache -f -s -v 
