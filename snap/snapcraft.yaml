@@ -67,3 +67,8 @@ apps:
     plugs:
       - opengl
       - audio-playback
+
+hooks:
+  configure:
+    plugs:
+      - desktop
