@@ -1,5 +1,7 @@
 #!/bin/sh -e
 
+export SNAP_DESKTOP_RUNTIME=${SNAP}/gnome-platform
+
 mkdir -p $SNAP_DATA/fontconfig
 echo "<fontconfig>" > ${SNAP_DATA}/fontconfig/fonts.conf
 echo "<cachedir>${SNAP_DATA}/fontconfig</cachedir>" >> ${SNAP_DATA}/fontconfig/fonts.conf
@@ -13,4 +15,4 @@ echo "</fontconfig>" >> ${SNAP_DATA}/fontconfig/fonts.conf
 
 export FONTCONFIG_FILE=${SNAP_DATA}/fontconfig/fonts.conf
 
-exec ${SNAP}/snap/command-chain/snapcraft-runner ${SNAP}/usr/bin/fc-cache --force --system-only --verbose
+exec ${SNAP}/snap/command-chain/snapcraft-runner ${SNAP_DESKTOP_RUNTIME}/usr/bin/fc-cache --force --system-only --verbose
