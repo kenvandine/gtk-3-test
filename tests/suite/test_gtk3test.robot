@@ -5,6 +5,6 @@ Resource         kvm.resource
 
 *** Test Cases ***
 Gtk 3 Test Launches And Renders
-    [Documentation]    Verify gtk-3-test snap launches and renders a UI on Mir
+    [Documentation]    Verify gtk-3-test snap launches and renders a UI on a real GNOME desktop session (no Mir compositor or VNC required)
     [Tags]    smoke    yarf:certification_status: blocker
     Log Screenshot
